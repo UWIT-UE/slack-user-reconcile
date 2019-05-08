@@ -4,10 +4,11 @@ Reconcile Slack user accounts with GWS group membership. Disables users not pres
 
 This script suitable for systemd deployment or Container
 
-Configuration is required and expected in file "/user-reconcile.cfg" or in the file specified in environment variable, CONFIG_FILE
+Configuration is required and expected in file "/user-reconcile.cfg" or in the file specified in environment variable, CONFIG_FILE, See example user-reconcile.cfg.
 
 ## Building container
 Google Cloud Build build this directory for use in Managed Container Infrastructure
-Require credentials in uwit-mci-svcs or service account
+
+This Requires credentials in uwit-mci-svcs or service account
 
 ```gcloud --project uwit-mci-svcs builds submit --tag gcr.io/uwit-mci-svcs/user-reconcile:$(date "+%Y%m%d%H%M") .```

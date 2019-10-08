@@ -41,7 +41,7 @@ for option in gws_options:
         sys.exit(1)
 
 # Not user servicable
-gws_url = 'https://iam-ws.u.washington.edu/group_sws/v3'
+gws_url = 'https://groups.uw.edu/group_sws/v3'
 users_api_url = "https://{team_id}.slack.com/api/users.list?token={api_token}"
 post_api_url = "https://{team_id}.slack.com/api/chat.postMessage?token={api_token}&channel={channel}&text={message}"
 scim_api_url = "https://api.slack.com/scim/v1/Users/{user_id}"

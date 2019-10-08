@@ -160,9 +160,9 @@ for user in slackUsers:
 ## Summarize
 if len(actionsTaken['deactivate']):
     slack_post(cfgvals['slack_team'], cfgvals['slack_token'], cfgvals['slack_post_channel'], "*Deactivated users*\n" + ", ".join(actionsTaken['deactivate']))
-    loginfo('Deactivated users ', ", ".join(actionsTaken['deactivate']))
+    loginfo('Deactivated users ' + ", ".join(actionsTaken['deactivate']))
 if len(actionsTaken['reactivate']):
     slack_post(cfgvals['slack_team'], cfgvals['slack_token'], cfgvals['slack_post_channel'], "*Reactivated users*\n" + ", ".join(actionsTaken['reactivate']))
-    loginfo('Reactivated users ', ", ".join(actionsTaken['reactivate']))
+    loginfo('Reactivated users ' + ", ".join(actionsTaken['reactivate']))
 
 

@@ -1,14 +1,19 @@
-# user-reconcile
+# Slack User Reconcile
 
-Reconcile Slack user accounts with GWS group membership. Disables users not present in the group, reenables existing users that may come back. (Slack with SAML auto-provisions new users based on GWS group specified in IDP so there is no need for this script to do any provisioning.)
+Reconcile Slack user accounts with UW Groups Service group membership. Run as a periodic task, user-reconcile disables users not present in the specified group, and re-enables existing users that may come back.
 
-This script suitable for systemd deployment or Container
+Slack is configured with SAML auth using the UW IdP and IdP-enforced conditional access, ie allowing only members of an IdP configured UW group. In this configuration, new Slack users are auto-provisioned in Slack upon first SAML login. Thus the user-reconcile script does not need to do any provisioning, only disable and re-enable.
 
+This script suitable for deployment under systemd without a container or containerized to be run under Docker or in another orchestrator.
+
+## Configuration
 Configuration is required and expected in file "/user-reconcile.cfg" or in the file specified in environment variable, CONFIG_FILE, See example user-reconcile.cfg.
 
 ## Building container
-Google Cloud Build build this directory for use in Managed Container Infrastructure
+Container can be built with `docker` command and the supplied Dockerfile.
 
-This Requires credentials in uwit-mci-svcs or service account
+To build a container with Google Cloud Build, use a command similar to:
 
 ```gcloud --project uwit-mci-svcs builds submit --tag gcr.io/uwit-mci-svcs/user-reconcile:$(date "+%Y%m%d%H%M") .```
+
+Note: this obviously requires credentials in uwit-mci-svcs, use your own project as required.

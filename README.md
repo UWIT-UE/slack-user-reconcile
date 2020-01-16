@@ -7,7 +7,7 @@ At UW, Slack is configured with SAML auth using the UW IdP and IdP-enforced cond
 This script suitable for deployment under systemd without a container or containerized to be run under Docker or in another orchestrator.
 
 ## Configuration
-Configuration is required and expected in file "/user-reconcile.cfg" or in the file specified in environment variable, CONFIG_FILE, See example user-reconcile.cfg.
+Configuration is required and expected in file "/config/user-reconcile.cfg" or in the file specified in environment variable, CONFIG_FILE, See example user-reconcile.cfg.
 
 ## Building container
 Container can be built with `docker` command and the supplied Dockerfile.

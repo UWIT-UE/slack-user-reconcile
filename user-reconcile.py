@@ -14,7 +14,7 @@ def loginfo(msg):
 def logerror(msg):
     sys.stderr.write('user-reconcile error: {0}\n'.format(msg))
 
-CONFIG_FILE = '/user-reconcile.cfg'
+CONFIG_FILE = '/config/user-reconcile.cfg'
 if 'CONFIG_FILE' in os.environ:
     CONFIG_FILE = os.environ['CONFIG_FILE']
 

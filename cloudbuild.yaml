@@ -1,4 +1,6 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/slack-user-reconcile:$TAG_NAME', '.' ]
-images: ['gcr.io/$PROJECT_ID/slack-user-reconcile']
+  args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/$REPO_NAME:$TAG_NAME', '-t', 'gcr.io/$PROJECT_ID/$REPO_NAME:latest', '.' ]
+images: 
+- 'gcr.io/$PROJECT_ID/$REPO_NAME:$TAG_NAME'
+- 'gcr.io/$PROJECT_ID/$REPO_NAME:latest'

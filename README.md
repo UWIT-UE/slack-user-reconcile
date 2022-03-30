@@ -11,9 +11,3 @@ Configuration is required and expected in file "/config/user-reconcile.cfg" or i
 
 ## Building container
 Container can be built with `docker` command and the supplied Dockerfile.
-
-To build a container with Google Cloud Build, use a command similar to:
-
-```gcloud --project uwit-mci-ueteam builds submit --tag gcr.io/uwit-mci-ueteam-reg/user-reconcile:$(date "+%Y%m%d%H%M") .```
-
-Note: this obviously requires credentials in uwit-mci-ueteam, use your own project as required.

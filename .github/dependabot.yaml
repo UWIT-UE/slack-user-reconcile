@@ -9,3 +9,7 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    pull-request-branch-name:
+      # Separate sections of the branch name with a underscore instead of slash
+      # since slash is not a valid tag name on Cloud Build
+      separator: "_"

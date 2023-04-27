@@ -1,5 +1,5 @@
 
-FROM python:3.7-slim
+FROM python:3.10-slim
 
 ENV PATH="/venv/bin:$PATH"
 RUN python3 -m venv /venv

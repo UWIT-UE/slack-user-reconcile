@@ -47,22 +47,30 @@ post_api_url = "https://{team_id}.slack.com/api/chat.postMessage?token={api_toke
 scim_api_url = "https://api.slack.com/scim/v1/Users/{user_id}"
 
 def slack_get_users(team_id, api_token):
-    url = users_api_url.format(team_id=team_id, api_token=api_token)
-    r = requests.get(url)
-    if not r.status_code == requests.codes.ok:
-        logerror ('bad http response on get_users: {}'.format(r.status_code))
-        return list()
+    userlist = list()
+    cursor = ""
 
-    response_data = r.json()
-    if not response_data.get('ok'):
-        logerror ('bad status on get_users: {}'.format(response_data['error']))
-        return list()
+    while True:
+        url = users_api_url.format(team_id=team_id, api_token=api_token) + "&cursor=" + cursor
+        r = requests.get(url)
+        if not r.status_code == requests.codes.ok:
+            logerror ('bad http response on get_users: {}'.format(r.status_code))
+            return list()
 
-    if 'members' in response_data:
-        return response_data['members']
-    else:
-        logerror ('no members provided by Slack')
-        return list()
+        response_data = r.json()
+        if not response_data.get('ok'):
+            logerror ('bad status on get_users: {}'.format(response_data['error']))
+            return list()
+
+        if 'members' in response_data:
+             userlist += response_data['members']
+
+        if not response_data['response_metadata'].get('next_cursor'):
+            break
+        cursor = response_data['response_metadata']['next_cursor']
+
+    return userlist
+
 
 def slack_deactivate(team_id, api_token, user_id):
     # deactivate uses SCIM REST calling convention unlike the rest of Slack API
@@ -91,7 +99,7 @@ def slack_reactivate(team_id, api_token, user_id):
         return True
 
 def slack_post(team_id, api_token, channel, message):
-    url = post_api_url.format(team_id=team_id, api_token=api_token, 
+    url = post_api_url.format(team_id=team_id, api_token=api_token,
                               channel=urllib.parse.quote(channel), message=urllib.parse.quote(message))
     r = requests.put(url)
     if not r.status_code == requests.codes.ok:
@@ -120,13 +128,13 @@ permitGroupMembers = r.json()['data']
 permitList = {}
 for puser in permitGroupMembers:
     if puser['type'] == 'uwnetid':
-        permitList[puser['id']] = 1    
+        permitList[puser['id']] = 1
 
 if len(permitList.keys()) < int(cfgvals['failsafe_count']):
     logerror("membership of permit group ({}) is too small, abort".format(len(permitList.keys())))
     sys.exit(1)
 
-## Process Slack users 
+## Process Slack users
 actionsTaken = { "reactivate": [], "deactivate": [] }
 slackUsers = slack_get_users(cfgvals['slack_team'], cfgvals['slack_token'])
 for user in slackUsers:
@@ -138,7 +146,7 @@ for user in slackUsers:
     if user['deleted']:
         if user['name'] in permitList:
             if slack_reactivate(cfgvals['slack_team'], cfgvals['slack_token'], user['id']):
-                loginfo ('Reactivated  ' + user['name']) 
+                loginfo ('Reactivated  ' + user['name'])
                 actionsTaken['reactivate'].append(user['name'])
         continue
 
@@ -148,7 +156,7 @@ for user in slackUsers:
             continue
         if user['is_admin'] or user['is_owner'] or user['is_primary_owner']:
             #loginfo('Skipping admin/owner ' + user['name'])
-            slack_post(cfgvals['slack_team'], cfgvals['slack_token'], cfgvals['slack_post_channel'], 
+            slack_post(cfgvals['slack_team'], cfgvals['slack_token'], cfgvals['slack_post_channel'],
                        ":exclamation: *Attention Human* :exclamation:\nUser {} is no longer eligible for Slack but is an owner or admin. Please manually process this one if its real.".format(user['name']))
             continue
 
@@ -156,7 +164,7 @@ for user in slackUsers:
         if slack_deactivate(cfgvals['slack_team'], cfgvals['slack_token'], user['id']):
             loginfo('Deactivated ' + user['name'])
             actionsTaken['deactivate'].append(user['name'])
-            
+
 ## Summarize
 if len(actionsTaken['deactivate']):
     slack_post(cfgvals['slack_team'], cfgvals['slack_token'], cfgvals['slack_post_channel'], "*Deactivated users*\n" + ", ".join(actionsTaken['deactivate']))
